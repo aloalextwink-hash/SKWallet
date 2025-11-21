@@ -1,0 +1,362 @@
+import tkinter as tk
+import random
+import os
+
+save_folder = r'U:\586\1.4\save_folder'
+loginesnes = os.path.join(save_folder, 'logins.txt')
+namesmes = os.path.join(save_folder, 'names.txt')
+paroless = os.path.join(save_folder, 'password.txt')
+
+root = tk.Tk()
+root.title("SKWallet")
+root.geometry("1920x1800")
+root.config(bg="#0D447A")
+
+v1 = ''
+v2 = ''
+v22 = []
+v11 = []
+v00 = []
+selected = []
+all_passw = []
+all_login = []
+all_login2 = []
+def exit_app():
+    exit_btn = tk.Button(root, text="Выход", width=10, height=1, font=("Verdana", 12),bg="#FF5252", fg="white", activebackground="#D32F2F",command=root.quit)
+    exit_btn.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
+def menushka():
+    exit_btn = tk.Button(root, text="Меню", width=10, height=1, font=("Verdana", 12),bg="#279606", fg="white", activebackground="#0A4B0A",command=menu)
+    exit_btn.place(relx=1.0, rely=1.0, anchor="se", x=-150, y=-10)
+
+def clear_window():
+    for widget in root.winfo_children():
+        widget.destroy()
+
+def toggle_button(name, button):
+    if name in selected:
+        selected.remove(name)
+        button.config(relief="raised")
+    else:
+        selected.append(name)
+        button.config(relief="sunken",bg='#4CAF50')
+
+def refresh():
+    clear_window()
+    paswordsss()
+
+def menu():
+    clear_window()
+
+    buttons_frame = tk.Frame(root)
+    buttons_frame.pack(expand=True)
+    buttons_frame.config(bg='#0D447A')
+
+    # ASCII-арт SKWallet
+    ascii_art = """
+    ███████╗██╗  ██╗██╗    ██╗ █████╗ ██╗     ██╗     ███████╗████████╗
+    ██╔════╝██║ ██╔╝██║    ██║██╔══██╗██║     ██║     ██╔════╝╚══██╔══╝
+    ███████╗█████╔╝ ██║ █╗ ██║███████║██║     ██║     █████╗     ██║   
+    ╚════██║██╔═██╗ ██║███╗██║██╔══██║██║     ██║     ██╔══╝     ██║   
+    ███████║██║  ██╗╚███╔███╔╝██║  ██║███████╗███████╗███████╗   ██║   
+    ╚══════╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝   ╚═╝   
+    """
+    
+    title = tk.Label(buttons_frame, text=ascii_art, font=("Courier", 8), 
+                     fg="#071C55", bg='#0D447A', justify=tk.CENTER)
+    title.pack(pady=20)
+
+    papaswords = tk.Button(buttons_frame, text="Хранилище", width=20, height=2,font=("Verdana", 16), command=paswordsss, bg = "#517396")
+    generator = tk.Button(buttons_frame, text="Генератор паролей", width=20, height=2, font=("Verdana", 16), command=gnrate, bg = '#517396')
+    add_new_password = tk.Button(buttons_frame, text="Добавить логин", width=20, height=2, font=("Verdana", 16), command=add_login, bg = '#517396')
+    add_new_password.pack(pady=20)
+    papaswords.pack(pady=20)
+    
+    exit_app()
+
+
+def gnrate():
+    root1 = tk.Tk()
+    root1.title("SKWallet")
+    root1.geometry("920x800")
+    root1.config(bg = '#0D447A')
+    pasword = ''
+    selected = []
+    a = 0
+    spisok = []
+
+    def exit_app1():
+        exit_btn = tk.Button(root1, text="Выход", width=10, height=1, font=("Verdana", 12),bg="#FF5252", fg="white", activebackground="#D32F2F",command=root1.destroy)
+        exit_btn.place(relx=1.0, rely=1.0, anchor="se", x=-10, y=-10)
+    exit_app1()
+    def clear_windo1():
+        for widget in root1.pack_slaves():
+            widget.pack_forget()
+        for widget in root1.place_slaves():
+            widget.place_forget()
+    def pereregan():
+        root1.destroy()
+        gnrate()
+    label = tk.Label(root1, text="Введите длину пароля:", font=("Verdana", 20), bg = '#0D447A')
+    label.pack(pady=10)
+    entry = tk.Entry(root1, width=30, font=("Verdana", 18))
+    entry.pack(padx=40, pady=40)
+    
+    def toggle_button_local(name, button):
+        nonlocal selected
+        if name in selected:
+            selected.remove(name)
+            button.config(relief="raised", bg='#F0F0F0')
+        else:
+            selected.append(name)
+            button.config(relief="sunken",bg='#4CAF50')
+
+    def on_enter(event):
+        nonlocal a
+        try:
+            a = int(entry.get())
+
+            label.config(text="Выберите типы символов:")
+            label.pack(pady=10)
+            clear_windo1()
+            show_buttons()
+        except ValueError:
+            label.config(text="Введите именно число!")
+    entry.bind("<Return>", on_enter)
+    
+    def show_buttons():
+        btn1 = tk.Button(root1, text="Буквы", width=20, height=2, font=("Verdana", 16))
+        btn2 = tk.Button(root1, text="Цифры", width=20, height=2, font=("Verdana", 16))
+        btn3 = tk.Button(root1, text="Символы", width=20, height=2, font=("Verdana", 16))
+        next_btn = tk.Button(root1, text="Далее", width=20, height=2, font=("Verdana", 16), command=show_result, bg = '#2199F3', fg = 'white', activebackground = '#1976D2')
+
+        btn1.config(command=lambda: toggle_button_local("Буквы", btn1))
+        btn2.config(command=lambda: toggle_button_local("Цифры", btn2))
+        btn3.config(command=lambda: toggle_button_local("Символы", btn3))
+
+        btn1.pack(pady=10)
+        btn2.pack(pady=10)
+        btn3.pack(pady=10)
+        next_btn.pack(pady=20)
+        exit_app1()
+        
+
+    def copy_to_clipboard():
+        nonlocal pasword
+        global copy_button 
+        original_text = copy_button.cget("text")
+        root1.clipboard_clear()
+        root1.clipboard_append(pasword)
+        copy_button.config(text="✓ Готово!")
+        root1.after(1500, lambda: copy_button.config(text=original_text))
+
+    def show_result():
+        nonlocal spisok, pasword
+        spisok = []
+
+        if 'Буквы' in selected:
+            spisok += list('abcdefghijklmnopqrstuvwxyzQWERTYUIOPASDFGHJKLZXCVBNM')
+        if 'Цифры' in selected:
+            spisok += list('0123456789')
+        if 'Символы' in selected:
+            spisok += list('!@#$%^&*_')
+
+        if not spisok:
+            label.config(text="Выберите хотя бы что-то!")
+            return
+        
+        pasword = ''
+        for i in range(a):
+            pasword += random.choice(spisok)
+        
+        all_passw.append(pasword)
+        
+        clear_windo1()
+        exit_app1()
+        label = tk.Label(root1, text=f"Ваш пароль: {pasword}", font=("Verdana", 20), bg = '#0D447A')
+        label.pack(pady=40)
+    
+        def okOK():
+            try:
+                pas1_entry.delete(0, tk.END)
+                pas1_entry.insert(0, pasword)
+            except Exception:
+                pass
+            root1.destroy()
+ 
+        ok_button = tk.Button(
+            root1, 
+            text="Подтвердить",         
+            font=("Verdana", 14), 
+            command=okOK, 
+            relief=tk.FLAT, bg = "#517396"
+        )
+
+        ok_button.pack(pady = 20)
+
+        regen_button = tk.Button(root1, text = "Перегенерировать", font = ('Verdana', 14), command = pereregan, relief=tk.FLAT, bg = "#517396")
+        regen_button.pack(pady= 20)
+
+    def close11():
+        root1.destroy()
+        menu()
+
+        ghghghgh = tk.Button(root1, text="Назад в меню", width=20, height=2, font=("Verdana", 16), command = close11, bg = "#517396")
+        ghghghgh.pack(pady=20)
+
+
+    exit_app()
+def paswordsss():
+    clear_window()
+    exit_app()
+    menushka()
+    
+    # Читаем данные один раз
+    try:
+        with open(loginesnes, 'r', encoding='utf-8') as f1:
+            v11 = [x for x in f1.read().strip().split(',') if x]
+    except FileNotFoundError:
+        v11 = []
+    try:
+        with open(namesmes, 'r', encoding='utf-8') as f88:
+            v00 = [x for x in f88.read().strip().split(',') if x]
+    except FileNotFoundError:
+        v00 = []
+    try:
+        with open(paroless, 'r', encoding='utf-8') as f2:
+            v22 = [x for x in f2.read().strip().split(',') if x]
+    except FileNotFoundError:
+        v22 = []
+    wer = tk.Label(root, text="ХРАНИЛИЩЕ", font=("Verdana", 20,), bg = '#0D447A').pack(pady=20)
+    para = list(zip(v00,v11,v22))
+    def copy_to_clip(password_to_copy, button):
+        root.clipboard_clear()
+        root.clipboard_append(password_to_copy)
+        button.config(text="✓ Готово!", state="disabled")
+        root.after(1500, lambda: button.config(text='Копировать пароль', state="normal"))
+        
+    def save_all():
+            logi = [item[1] for item in para]
+            pasi = [item[2] for item in para]
+            name = [item[0] for item in para]
+            with open(loginesnes, 'w', encoding='utf-8') as f1:
+                f1.write(','.join(logi))
+            with open(namesmes, 'w', encoding='utf-8') as f90:
+                f90.write(','.join(name))
+            with open(paroless, 'w', encoding='utf-8') as f2:
+                f2.write(','.join(pasi))
+   
+    def delete_1(idx):
+        para.pop(idx)
+        logins_updated, passwords_updated, name_update = zip(*para) if para else ([], [], [])
+        with open(loginesnes, 'w', encoding='utf-8') as lf:
+            lf.write(','.join(logins_updated))
+        with open(paroless, 'w', encoding='utf-8') as pf:
+            pf.write(','.join(passwords_updated))
+        with open(namesmes, 'w', encoding='utf-8') as pf0:
+            pf0.write(','.join(name_update))
+        refresh()
+    def back():
+        clear_window()
+        paswordsss()
+
+    def izmen_password(idx1):
+        clear_window()
+        rewg1tfg = tk.Label(root, text="Название:", font=("Verdana", 15), bg = '#0D447A').place(x=615,y=85)
+        fsrd1fgh = tk.Label(root, text="Логин:", font=("Verdana", 15), bg = '#0D447A').place(x=615,y=148)
+        fergt1fghyh = tk.Label(root, text="Пароль:", font=("Verdana", 15), bg = '#0D447A').place(x=615,y=215)
+        izmen_label = tk.Label(root, text="Введите измененый пароль и логин:", font=("Verdana", 20), bg = '#0D447A')
+        izmen_label.pack(pady=10)
+        entry_IZ0 = tk.Entry(root, width=30, font=("Verdana", 18))     # 1
+        entry_IZ0.pack(pady = 15)
+        entry_IZ = tk.Entry(root, width=30, font=("Verdana", 18))    #2
+        entry_IZ.pack(pady = 15)
+        entry_IZ1 = tk.Entry(root, width=30, font=("Verdana", 18))    #3
+        entry_IZ1.pack(pady = 15)
+        current_name, current_login, current_pass = para[idx1]
+        entry_IZ.insert(0, current_login)
+        entry_IZ1.insert(0, current_pass)
+        entry_IZ0.insert(0, current_name)
+        def soxriran():
+            izmena = entry_IZ.get()
+            izmena1 = entry_IZ1.get()
+            izmena0 = entry_IZ0.get()
+            para[idx1] = (izmena0, izmena, izmena1)
+            save_all()
+            clear_window()
+            paswordsss()
+        dell_btn = tk.Button(root, text="Подтвердить", font=("Verdana", 10), command = soxriran, bg = "#517396")
+        dell_btn.pack(pady=20)
+        back_btn = tk.Button(root, text="Отмена", font=("Verdana", 10), command = soxriran, bg = "#517396")
+        back_btn.pack(pady=20)
+
+
+    if v11 and v22 and v00 and len(v11) == len(v22)==len(v00): 
+        passwords_list_frame = tk.Frame(root)
+        passwords_list_frame.pack(pady=10, padx=30, fill="x")
+        passwords_list_frame.config(bg = '#0D447A')
+        for index, (namerate, login, password) in enumerate(para):
+            row_frame = tk.Frame(passwords_list_frame)
+            row_frame.pack(fill="x", pady=4)
+            name_label = tk.Label(row_frame, text=f'{index+1}. Название: {namerate}', font=("Verdana", 14), width=30, anchor="w" )
+            name_label.pack(side="left", padx=10)
+            login_label = tk.Label(row_frame, text=f'Логин: {login}', font=("Verdana", 14), width=30, anchor="w" )
+            login_label.pack(side="left", padx=10)
+            pass_label = tk.Label(row_frame, text=f'Пароль: {password}', font=("Verdana", 14), anchor="w")
+            pass_label.pack(side="left", padx=10, fill="x", expand=True)
+            copy_btn = tk.Button(row_frame, text="Копировать пароль", font=("Verdana", 10), bg = "#517396")
+            copy_btn.config(command=lambda current_p=password, btn=copy_btn: copy_to_clip(current_p, btn))
+            copy_btn.pack(side="right", padx=10)
+            dell_btn = tk.Button(row_frame, text="Удалить", font=("Verdana", 10), command=lambda idx=index: delete_1(idx), bg = "#517396")
+            dell_btn.pack(side="right", padx=10)
+            izmen_btn = tk.Button(row_frame, text="Изменить", font=("Verdana", 10), command=lambda idx1 = index: izmen_password(idx1), bg = "#517396")
+            izmen_btn.pack(side="right", padx=10)
+    
+    else:
+        tk.Label(root, text="Нет сохраненных паролей.", font=("Verdana", 14), bg = '#0D447A').pack()
+
+def add_login():
+    global all_login
+    global all_login2
+    clear_window()
+    exit_app()
+    menushka()
+    nad = tk.Label(root, text="Введите название/имя пользователя/пароль:", font=("Verdana", 20), bg = '#0D447A')
+    nad.pack(pady=20)
+    pas0_entry = tk.Entry(root, width=30, font=("Verdana", 18))
+    pas0_entry.pack(pady=10)
+    pas_entry = tk.Entry(root, width=30, font=("Verdana", 18))
+    pas_entry.pack(pady=10)
+    global pas1_entry
+    pas1_entry = tk.Entry(root, width=30, font=("Verdana", 18))
+    pas1_entry.pack(pady=10)
+    ok_button = tk.Button(root, text="Генерировать",font=("Verdana", 14), command= gnrate,relief=tk.FLAT, bg = "#517396"    
+        )
+    ok_button.place(x=1200, y=212)
+    rewgtfg = tk.Label(root, text="Название:", font=("Verdana", 15), bg = '#0D447A').place(x=620,y=90)
+    fsrdfgh = tk.Label(root, text="Логин:", font=("Verdana", 15), bg = '#0D447A').place(x=620,y=153)
+    fergtfghyh = tk.Label(root, text="Пароль:", font=("Verdana", 15), bg = '#0D447A').place(x=620,y=215)
+
+    
+    def soxran():
+        v1 = pas_entry.get()
+        v2 = pas1_entry.get()
+        v0 = pas0_entry.get()
+        if v1 and v2 and v0:
+            all_login.append((v0,v1,v2))
+            nad.config(text = 'Сохранено!')
+            root.after(1500, lambda: nad.config(text='Введите имя пользователя/Пароль:'))
+            pas_entry.delete(0, tk.END)
+            pas1_entry.delete(0, tk.END)
+            pas0_entry.delete(0, tk.END)
+            with open(namesmes, 'a', encoding='utf-8') as f29:
+                f29.write(f"{v0},")
+            with open(loginesnes, 'a', encoding='utf-8') as f3:
+                f3.write(f"{v1},")
+            with open(paroless, 'a', encoding='utf-8') as f4:
+                f4.write(f"{v2},")
+        else: 
+            nad.config(text = 'Введите хоть что-то!')
+            root.after(1500, lambda: nad.config(text="Введите название/имя пользователя/пароль:"))
+    six = tk.Button(root, text="Сохранить", width=20, height=2, font=("Verdana", 16), command = soxran, bg = "#517396").pack(pady=29)
+menu()
+root.mainloop()
